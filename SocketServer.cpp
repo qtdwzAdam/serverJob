@@ -12,21 +12,29 @@ int TcpSocketServer::init()
         return -1;//exit(1);
     }
 
-    bzero(&serveraddr, sizeof(serveraddr));
+    memset(&serveraddr, 0, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
     serveraddr.sin_port = htons(SERVER_PORT);
     serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);//(SERVER_IP);
 
-    bind(listenfd, (struct sockaddr *)&serveraddr, sizeof(serveraddr));
+    if( bind(listenfd, (struct sockaddr *)&serveraddr, sizeof(serveraddr)) == -1)
+    {
+        printf("bind error!\n");
+        return -1;
+    }
 
-    listen(listenfd, MAX_SOCKETFD);
+    if( listen(listenfd, MAX_SOCKETFD) == -1)
+    {
+        printf("listen error!\n");
+        return -1;
+    }
 
     return listenfd;
 }
 
 int TcpSocketServer::acceptClient(int listenfd)
 {
-    socklen_t clientlen;
+    int clientlen;
     int clientfd;
     struct sockaddr_in clientaddr;
 
@@ -42,7 +50,7 @@ int TcpSocketServer::acceptClient(int listenfd)
             return -2;
         }
     }
-
+    printf ("The server has connected to the %s.\n",inet_ntoa(clientaddr.sin_addr));
     return clientfd;
 }
 
@@ -60,5 +68,6 @@ int TcpSocketServer::recvFromClient(int clientfd, char* recvBuf, int maxLength)
 
 void TcpSocketServer::closeClient(int clientfd)
 {
-    close(clientfd);
+    closesocket(clientfd);
+
 }
