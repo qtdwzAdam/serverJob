@@ -20,7 +20,7 @@
       <x>350</x>
       <y>80</y>
       <width>151</width>
-      <height>71</height>
+      <height>160</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -121,6 +121,32 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>PushButton</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="result123">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>270</y>
+      <width>111</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="result1">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>290</y>
+      <width>111</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
     </property>
    </widget>
   </widget>

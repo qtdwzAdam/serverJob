@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,10 +16,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindowserver.cpp \
     SocketServer.cpp \
-    protocol.cpp
+    protocol.cpp \
+    mysocket.cpp
 
 HEADERS  += mainwindowserver.h \
     SocketServer.h \
-    protocol.h
+    protocol.h \
+    mysocket.h
 
 FORMS    += mainwindowserver.ui

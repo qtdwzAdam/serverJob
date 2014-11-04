@@ -1,29 +1,32 @@
 #ifndef SOCKETSERVER_H
 #define SOCKETSERVER_H
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<sys/types.h>
-#include<windows.h>
-#include<winsock.h>
-#include<errno.h>
+#include <QTcpServer>
+#include <QNetworkInterface>
 
-#pragma comment(lib, "wsock32.lib")
-#pragma comment(lib, "ws2_32.lib")
+QString getIPAddress() ;
 
-#define SERVER_PORT 9877
+class MySocket;
 
-#define MAX_SOCKETFD 20
+class ChatServer : public QTcpServer
+{
+    Q_OBJECT
 
-class TcpSocketServer{
 public:
-    int init();
-    int acceptClient(int listenfd);
-    void sendToClient(int clientfd, char* sendBuf);
-    int recvFromClient(int clientfd, char* recvBuf, int maxLength);
-    void closeClient(int clientfd);
-};
+    ChatServer  ( QObject *parent = NULL );
+    ~ChatServer ();
 
+    void    Run ( quint16 port );
+
+protected:
+    void    incomingConnection  ( int handle );
+
+private slots:
+    void    clientDisconnected  ();
+
+private:
+    quint16             _port;
+    QList<MySocket*>  _mysockets;
+};
 
 #endif // SOCKETSERVER_H

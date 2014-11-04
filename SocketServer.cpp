@@ -1,73 +1,62 @@
 #include "SocketServer.h"
-
-int TcpSocketServer::init()
+#include "mysocket.h"
+#include <QHostAddress>
+#include <stdio.h>
+ChatServer::ChatServer( QObject *parent)
+    : QTcpServer( parent )
 {
-    int listenfd;
-    struct sockaddr_in serveraddr;
-
-    listenfd = socket(AF_INET, SOCK_STREAM, 0);
-    if(listenfd<0)
-    {
-        printf("Socket Error!\n");
-        return -1;//exit(1);
-    }
-
-    memset(&serveraddr, 0, sizeof(serveraddr));
-    serveraddr.sin_family = AF_INET;
-    serveraddr.sin_port = htons(SERVER_PORT);
-    serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);//(SERVER_IP);
-
-    if( bind(listenfd, (struct sockaddr *)&serveraddr, sizeof(serveraddr)) == -1)
-    {
-        printf("bind error!\n");
-        return -1;
-    }
-
-    if( listen(listenfd, MAX_SOCKETFD) == -1)
-    {
-        printf("listen error!\n");
-        return -1;
-    }
-
-    return listenfd;
+    _mysockets.empty();
 }
 
-int TcpSocketServer::acceptClient(int listenfd)
+ChatServer::~ChatServer()
 {
-    int clientlen;
-    int clientfd;
-    struct sockaddr_in clientaddr;
+    qDeleteAll( _mysockets );
+    _mysockets.clear();
+}
 
-    clientlen = sizeof(clientaddr);
-    clientfd = accept(listenfd, (struct sockaddr *)&clientaddr, &clientlen);
-    if(clientfd<0)
+void ChatServer::Run( quint16 port )
+{
+    printf("Run the Run function in ChatServer!\n");
+    if( !this->listen(QHostAddress::Any, port) )
     {
-        if(errno == EINTR)
-            return -1;//continue;
-        else
-        {
-            printf("Accept Error!\n");
-            return -2;
+        printf( "ChatServer listen failed !" );
+        qDebug() << this->errorString();
+        close();
+    }
+}
+
+void ChatServer::incomingConnection( int handle )
+{
+    printf( "incomingConnection(): %d !\n", handle );
+    MySocket *mysocket = new MySocket( this );
+    mysocket->setSocketDescriptor( handle );
+    connect( mysocket, SIGNAL(disconnected()), this, SLOT(clientDisconnected()) );
+    _mysockets.append( mysocket );
+}
+
+void ChatServer::clientDisconnected()
+{
+    printf( "client disconnected !\n" );
+    QList<MySocket*>::iterator iter;
+    for( iter = _mysockets.begin(); iter != _mysockets.end(); iter++ ) {
+        if( -1 == (*iter)->socketDescriptor() ) {
+            _mysockets.erase( iter );
+            return;
         }
     }
-    printf ("The server has connected to the %s.\n",inet_ntoa(clientaddr.sin_addr));
-    return clientfd;
 }
-
-void TcpSocketServer::sendToClient(int clientfd, char* sendBuf)
+QString getIPAddress()
 {
-    send(clientfd, sendBuf, strlen(sendBuf)+1, 0);
-}
-
-int TcpSocketServer::recvFromClient(int clientfd, char* recvBuf, int maxLength)
-{
-    int recvState;
-    recvState = recv(clientfd, recvBuf, maxLength, 0);
-    return recvState;
-}
-
-void TcpSocketServer::closeClient(int clientfd)
-{
-    closesocket(clientfd);
-
+QString ipAddress;
+    QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+    for (int i = 0; i < ipAddressesList.size(); ++i) {
+        if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
+            ipAddressesList.at(i).toIPv4Address()) {
+            ipAddress = ipAddressesList.at(i).toString();
+            break;
+        }
+    }
+    if (ipAddress.isEmpty())
+        ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
+    return ipAddress;
 }
