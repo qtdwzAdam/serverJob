@@ -5,8 +5,8 @@
 #include <QNetworkInterface>
 
 QString getIPAddress() ;
-
 class MySocket;
+
 
 class ChatServer : public QTcpServer
 {
