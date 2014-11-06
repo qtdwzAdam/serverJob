@@ -4,7 +4,7 @@
 #include <QtNetwork>
 
 #include <stdlib.h>
-ChatServer::ChatServer( QWidget *parent)
+SocketServer::SocketServer( QWidget *parent)
     : QDialog(parent), tcpServer(0), networkSession(0)
 {
     statusLabel = new QLabel;
@@ -62,12 +62,12 @@ ChatServer::ChatServer( QWidget *parent)
 }
 
 
-ChatServer::~ChatServer()
+SocketServer::~SocketServer()
 {
 
 }
 
-void ChatServer::sessionOpened()
+void SocketServer::sessionOpened()
 {
     // Save the used configuration
     if (networkSession) {
@@ -107,33 +107,38 @@ void ChatServer::sessionOpened()
     if (ipAddress.isEmpty())
         ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
     statusLabel->setText(tr("The server is running on\n\nIP: %1\nport: %2\n\n"
-                            "Run the Qt TCP Client now.")
+                            "Run the Qt TCP Client now.\n\n\n")
                          .arg(ipAddress).arg(tcpServer->serverPort()));
 }
 
 
-void ChatServer::confirmID()
+void SocketServer::confirmID()
 {
 
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_4_0);
-
-    out << (quint16)0;
-    out << fortunes.at(qrand() % fortunes.size());
-    out.device()->seek(0);
-    out << (quint16)(block.size() - sizeof(quint16));
-
+    QString infoToConfirm;
+    infoToConfirm = tr("This is a test!\n");
 
     QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
-    connect(clientConnection, SIGNAL(disconnected()),
-            clientConnection, SLOT(deleteLater()));
 
-    clientConnection->write(block);
+    sendString(infoToConfirm, clientConnection);
+
+
     //clientConnection->disconnectFromHost();
 
 }
+void SocketServer::sendString(QString str, QTcpSocket *clientConnection)
+{
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_3);
 
+    out << (quint16)0;
+    out << str;
+    out.device()->seek(0);
+    out << (quint16)(block.size() - sizeof(quint16));
+
+    clientConnection->write(block);
+}
 
 QString getIPAddress()
 {

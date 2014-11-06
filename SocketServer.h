@@ -13,22 +13,23 @@ QT_END_NAMESPACE
 
 QString getIPAddress() ;
 
-class ChatServer : public QDialog
+class SocketServer : public QDialog
 {
     Q_OBJECT
 
 public:
-    ChatServer  ( QWidget *parent = NULL );
-    ~ChatServer ();
+    SocketServer  ( QWidget *parent = NULL );
+    ~SocketServer ();
 
     void    Run ( quint16 port );
+    void    sendString(QString str, QTcpSocket *clientConnection);
 
 protected:
     void    incomingConnection  ( int handle );
 
 private slots:
     void    sessionOpened();
-    void    sendFortune();
+    void    confirmID();
 
 private:
     QLabel *statusLabel;

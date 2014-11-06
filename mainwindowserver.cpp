@@ -9,7 +9,7 @@ MainWindowServer::MainWindowServer(QWidget *parent) :
     ui(new Ui::MainWindowServer)
 {
 
-    ChatServer tt;
+    SocketServer tt;
 
     ui->setupUi(this);
     ui->portSetting_2->setText(getIPAddress());

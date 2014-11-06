@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
     MainWindowServer w;
     w.show();
-    ChatServer server;
+    SocketServer server;
     server.show();
     return a.exec();
 }
