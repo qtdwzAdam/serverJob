@@ -3,7 +3,6 @@
 
 #include <QTcpServer>
 #include <QNetworkInterface>
-
 QString getIPAddress() ;
 class MySocket;
 

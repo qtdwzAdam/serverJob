@@ -16,9 +16,7 @@ public:
     ~MainWindowServer();
 
 private slots:
-    void on_textBrowser_2_destroyed();
 
-    void on_portSettingTxt_textChanged();
 
 private:
     Ui::MainWindowServer *ui;

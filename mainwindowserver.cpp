@@ -11,8 +11,13 @@ MainWindowServer::MainWindowServer(QWidget *parent) :
     ChatServer tt;
 
     ui->setupUi(this);
+    ui->portSetting_2->setText(getIPAddress());
 
     ui->result123->setText("Start to run Run");
+
+    //QTcpServer newserver;
+    //newserver.listen(QHostAddress::Any, 9867);
+
     ChatServer server;
     server.Run(9877);
     ui->result1->setText("end of the run");
@@ -24,15 +29,3 @@ MainWindowServer::~MainWindowServer()
     delete ui;
 }
 
-void MainWindowServer::on_textBrowser_2_destroyed()
-{
-
-}
-
-void MainWindowServer::on_portSettingTxt_textChanged()
-{
-    static int flag = 1;
-    if(flag){
-        printf("dfsdfsd");
-    }
-}

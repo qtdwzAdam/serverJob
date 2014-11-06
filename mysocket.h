@@ -9,13 +9,13 @@ class MySocket : public QTcpSocket
     Q_OBJECT
 public:
     explicit MySocket(QObject *parent = 0);
-    ~MySocket   ();
 
-signals:
+private slots:
+    void readClient();
 
-public slots:
-    void onReadyRead ();
+private:
 
+    quint16 nextBlockSize;
 };
 
 #endif // MYSOCKET_H

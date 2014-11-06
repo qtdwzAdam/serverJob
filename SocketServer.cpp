@@ -2,6 +2,7 @@
 #include "mysocket.h"
 #include <QHostAddress>
 #include <stdio.h>
+#include <qlabel.h>
 ChatServer::ChatServer( QObject *parent)
     : QTcpServer( parent )
 {
@@ -16,6 +17,10 @@ ChatServer::~ChatServer()
 
 void ChatServer::Run( quint16 port )
 {
+    QLabel test;
+
+    test.setText("Start to run listen");
+    test.show();
     printf("Run the Run function in ChatServer!\n");
     if( !this->listen(QHostAddress::Any, port) )
     {
@@ -23,6 +28,7 @@ void ChatServer::Run( quint16 port )
         qDebug() << this->errorString();
         close();
     }
+    test.setText("end to run listen");
 }
 
 void ChatServer::incomingConnection( int handle )
@@ -47,7 +53,7 @@ void ChatServer::clientDisconnected()
 }
 QString getIPAddress()
 {
-QString ipAddress;
+    QString ipAddress;
     QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
     for (int i = 0; i < ipAddressesList.size(); ++i) {
         if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
