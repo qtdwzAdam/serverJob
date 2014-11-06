@@ -8,6 +8,7 @@ MainWindowServer::MainWindowServer(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindowServer)
 {
+
     ChatServer tt;
 
     ui->setupUi(this);
@@ -18,9 +19,9 @@ MainWindowServer::MainWindowServer(QWidget *parent) :
     //QTcpServer newserver;
     //newserver.listen(QHostAddress::Any, 9867);
 
-    ChatServer server;
-    server.Run(9877);
     ui->result1->setText("end of the run");
+
+
     connect(ui->pushButton,SIGNAL(clicked()), this, SLOT(close()));
 }
 

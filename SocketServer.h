@@ -1,18 +1,24 @@
 #ifndef SOCKETSERVER_H
 #define SOCKETSERVER_H
 
+#include <QDialog>
 #include <QTcpServer>
 #include <QNetworkInterface>
+QT_BEGIN_NAMESPACE
+class QLabel;
+class QPushButton;
+class QTcpServer;
+class QNetworkSession;
+QT_END_NAMESPACE
+
 QString getIPAddress() ;
-class MySocket;
 
-
-class ChatServer : public QTcpServer
+class ChatServer : public QDialog
 {
     Q_OBJECT
 
 public:
-    ChatServer  ( QObject *parent = NULL );
+    ChatServer  ( QWidget *parent = NULL );
     ~ChatServer ();
 
     void    Run ( quint16 port );
@@ -21,11 +27,16 @@ protected:
     void    incomingConnection  ( int handle );
 
 private slots:
-    void    clientDisconnected  ();
+    void    sessionOpened();
+    void    sendFortune();
 
 private:
-    quint16             _port;
-    QList<MySocket*>  _mysockets;
+    QLabel *statusLabel;
+    QPushButton *quitButton;
+    QTcpServer *tcpServer;
+    QStringList fortunes;
+    QNetworkSession *networkSession;
+
 };
 
 #endif // SOCKETSERVER_H
