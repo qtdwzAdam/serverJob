@@ -1,7 +1,6 @@
 #include "mainwindowserver.h"
 #include "ui_mainwindowserver.h"
 
-#include "SocketServer.h"
 #include <QLabel>
 
 MainWindowServer::MainWindowServer(QWidget *parent) :
@@ -20,10 +19,15 @@ MainWindowServer::MainWindowServer(QWidget *parent) :
     */
 
 
-    SocketServer tt;
+
+    socketserver = new SocketServer(this, 9877);
 
     ui->setupUi(this);
-    ui->portSetting_2->setText(getIPAddress());
+    ui->IP_address->setText((getIPAddress()));
+
+    QString str;
+     str.append(ui->PortUsed->toPlainText());
+    qDebug() <<str;
 
     ui->result123->setText("Start to run Run");
 
@@ -31,11 +35,6 @@ MainWindowServer::MainWindowServer(QWidget *parent) :
     //newserver.listen(QHostAddress::Any, 9867);
 
     ui->result1->setText("end of the run");
-
-
-    connect(ui->pushButton,SIGNAL(clicked()), this, SLOT(close()));
-
-
 
     //setWindowTitle(tr("Test-dwz-main"));
     //setFixedHeight(sizeHint().height());

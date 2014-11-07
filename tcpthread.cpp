@@ -2,6 +2,7 @@
 #include <QtGui>
 #include <QtNetwork>
 #include <QApplication>
+#include <QTextStream>
 
 TcpThread::TcpThread(int handle, QObject *parent) :
     QThread(parent), handle(handle)
@@ -18,6 +19,7 @@ void TcpThread::run()
         return;
     }
     qDebug() << handle;
+
     connect(tcpSocket, SIGNAL(readyRead()),
             this, SLOT(receiveFile()), Qt::BlockingQueuedConnection);
     exec();

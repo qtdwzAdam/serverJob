@@ -7,9 +7,9 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    //MainWindowServer w;
-    //w.show();
-    SocketServer server;
-    server.show();
+    MainWindowServer w;
+    w.show();
+
+    qDebug()<<"show the server success!!";
     return a.exec();
 }

@@ -6,6 +6,7 @@
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QPushButton>
+#include "SocketServer.h"
 namespace Ui {
 class MainWindowServer;
 }
@@ -27,6 +28,9 @@ private:
     QLineEdit       *caseCheckBox;
     QCheckBox       *backwardCheckbox;
     QPushButton     *closeButton;
+
+    SocketServer * socketserver;
+    int port;
 
 };
 
