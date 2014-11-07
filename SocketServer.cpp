@@ -2,6 +2,7 @@
 #include <QHostAddress>
 #include <QtWidgets>
 #include <QtNetwork>
+#include "tcpthread.h"
 
 #include <stdlib.h>
 SocketServer::SocketServer( QWidget *parent)
@@ -10,6 +11,9 @@ SocketServer::SocketServer( QWidget *parent)
     statusLabel = new QLabel;
     quitButton = new QPushButton(tr("Quit"));
     quitButton->setAutoDefault(false);
+
+    sendTest = new QPushButton(tr("sendTest"));
+    sendTest->setAutoDefault(false);
 
     QNetworkConfigurationManager manager;
     if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
@@ -22,7 +26,7 @@ SocketServer::SocketServer( QWidget *parent)
         // If the saved network configuration is not currently discovered use the system default
         QNetworkConfiguration config = manager.configurationFromIdentifier(id);
         if ((config.state() & QNetworkConfiguration::Discovered) !=
-            QNetworkConfiguration::Discovered) {
+                QNetworkConfiguration::Discovered) {
             config = manager.defaultConfiguration();
         }
 
@@ -35,35 +39,45 @@ SocketServer::SocketServer( QWidget *parent)
         sessionOpened();
     }
 
-        fortunes << tr("You've been leading a dog's life. Stay off the furniture.")
-                 << tr("You've got to think about tomorrow.")
-                 << tr("You will be surprised by a loud noise.")
-                 << tr("You will feel hungry again in another hour.")
-                 << tr("You might have mail.")
-                 << tr("You cannot kill time without injuring eternity.")
-                 << tr("Computers are not intelligent. They only think they are.");
+    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
 
-        connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(sendTest, SIGNAL(clicked()), this, SLOT(confirmID()));
 
-        connect(tcpServer, SIGNAL(newConnection()), this, SLOT(confirmID()));
+    //connect(tcpServer, SIGNAL(newConnection()), this, SLOT(confirmID()));
 
 
-        QHBoxLayout *buttonLayout = new QHBoxLayout;
-        buttonLayout->addStretch(1);
-        buttonLayout->addWidget(quitButton);
-        buttonLayout->addStretch(1);
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    buttonLayout->addStretch(1);
+    buttonLayout->addWidget(quitButton);
+    buttonLayout->addStretch(1);
+    buttonLayout->addWidget(sendTest);
+    buttonLayout->addStretch(1);
 
-        QVBoxLayout *mainLayout = new QVBoxLayout;
-        mainLayout->addWidget(statusLabel);
-        mainLayout->addLayout(buttonLayout);
-        setLayout(mainLayout);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(statusLabel);
+    mainLayout->addLayout(buttonLayout);
+    setLayout(mainLayout);
 
-        setWindowTitle(tr("Qt TCP Server"));
+    setWindowTitle(tr("Qt TCP Server"));
 }
 
 
 SocketServer::~SocketServer()
 {
+
+}
+
+void SocketServer::incomingConnection  ( int handle )
+{
+    TcpThread *thread = new TcpThread(handle, this);
+    //将线程结束信号与线程的deleteLater槽关联
+    connect(thread, SIGNAL(finished()),
+            thread, SLOT(deleteLater()));
+    //关联相应的UI更新槽
+    connect(thread,SIGNAL(bytesArrived(qint64,qint32,int)),
+            this,SIGNAL(bytesArrived(qint64,qint32,int)));
+    //QT的线程都是从start开始，调用run()函数
+    thread->start();
 
 }
 
@@ -85,7 +99,7 @@ void SocketServer::sessionOpened()
     }
 
     tcpServer = new QTcpServer(this);
-    if (!tcpServer->listen()) {
+    if (!tcpServer->listen(QHostAddress::Any, 9877)) {
         QMessageBox::critical(this, tr("Fortune Server"),
                               tr("Unable to start the server: %1.")
                               .arg(tcpServer->errorString()));
@@ -98,7 +112,7 @@ void SocketServer::sessionOpened()
     // use the first non-localhost IPv4 address
     for (int i = 0; i < ipAddressesList.size(); ++i) {
         if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
-            ipAddressesList.at(i).toIPv4Address()) {
+                ipAddressesList.at(i).toIPv4Address()) {
             ipAddress = ipAddressesList.at(i).toString();
             break;
         }
@@ -146,7 +160,7 @@ QString getIPAddress()
     QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
     for (int i = 0; i < ipAddressesList.size(); ++i) {
         if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
-            ipAddressesList.at(i).toIPv4Address()) {
+                ipAddressesList.at(i).toIPv4Address()) {
             ipAddress = ipAddressesList.at(i).toString();
             break;
         }

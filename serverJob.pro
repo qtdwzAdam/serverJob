@@ -15,9 +15,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindowserver.cpp \
-    SocketServer.cpp
+    SocketServer.cpp \
+    tcpthread.cpp
 
 HEADERS  += mainwindowserver.h \
-    SocketServer.h
+    SocketServer.h \
+    tcpthread.h
 
 FORMS    += mainwindowserver.ui

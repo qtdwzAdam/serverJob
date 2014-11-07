@@ -38,6 +38,8 @@ private:
     QStringList fortunes;
     QNetworkSession *networkSession;
 
+    QPushButton     *sendTest;
+
 };
 
 #endif // SOCKETSERVER_H

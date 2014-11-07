@@ -2,7 +2,10 @@
 #define MAINWINDOWSERVER_H
 
 #include <QMainWindow>
-
+#include <QLabel>
+#include <QLineEdit>
+#include <QCheckBox>
+#include <QPushButton>
 namespace Ui {
 class MainWindowServer;
 }
@@ -20,6 +23,11 @@ private slots:
 
 private:
     Ui::MainWindowServer *ui;
+    QLabel          *label;
+    QLineEdit       *caseCheckBox;
+    QCheckBox       *backwardCheckbox;
+    QPushButton     *closeButton;
+
 };
 
 #endif // MAINWINDOWSERVER_H

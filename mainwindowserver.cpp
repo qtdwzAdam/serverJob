@@ -8,6 +8,17 @@ MainWindowServer::MainWindowServer(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindowServer)
 {
+/*
+    QHBoxLayout *topLeftLayout = new QHBoxLayout;
+    topLeftLayout->addWidget(label);
+    topLeftLayout->addWidget(caseCheckBox);
+
+    QVBoxLayout *leftLayout = new QVBoxLayout;
+    leftLayout->addLayout(topLeftLayout);
+    leftLayout->addWidget(closeButton);
+
+    */
+
 
     SocketServer tt;
 
@@ -23,6 +34,11 @@ MainWindowServer::MainWindowServer(QWidget *parent) :
 
 
     connect(ui->pushButton,SIGNAL(clicked()), this, SLOT(close()));
+
+
+
+    //setWindowTitle(tr("Test-dwz-main"));
+    //setFixedHeight(sizeHint().height());
 }
 
 MainWindowServer::~MainWindowServer()
