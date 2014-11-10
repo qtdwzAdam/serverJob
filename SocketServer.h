@@ -23,16 +23,6 @@ protected:
 signals:
     void    bytesArrived(qint64,qint32,QByteArray,int);
 
-
-/*
-public slots:
-    void    sendout();
-private slots:
-    void    confirmID();
-
-private:
-
-*/
 };
 
 #endif // SOCKETSERVER_H
