@@ -16,10 +16,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindowserver.cpp \
     SocketServer.cpp \
-    tcpthread.cpp
+    tcpthread.cpp \
+    somFun.cpp \
+    glo.cpp
 
 HEADERS  += mainwindowserver.h \
     SocketServer.h \
-    tcpthread.h
+    tcpthread.h \
+    somFun.h \
+    glo.h
 
 FORMS    += mainwindowserver.ui

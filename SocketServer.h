@@ -2,6 +2,7 @@
 #define SOCKETSERVER_H
 
 #include <QTcpServer>
+#include <QTcpSocket>
 #include <QNetworkInterface>
 QT_BEGIN_NAMESPACE
 class QTcpServer;
@@ -15,14 +16,15 @@ class SocketServer :public QTcpServer
 
 public:
     SocketServer  (QObject *parent = 0 , int port=9877);
-    ~SocketServer ();
-
-    void    Run ( quint16 port );
-    void    sendString(QString str, QTcpSocket *clientConnection);
 
 protected:
     void    incomingConnection(int socketDescriptor );
 
+signals:
+    void    bytesArrived(qint64,qint32,QByteArray,int);
+
+
+/*
 public slots:
     void    sendout();
 private slots:
@@ -30,6 +32,7 @@ private slots:
 
 private:
 
+*/
 };
 
 #endif // SOCKETSERVER_H

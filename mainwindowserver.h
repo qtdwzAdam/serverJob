@@ -7,6 +7,8 @@
 #include <QCheckBox>
 #include <QPushButton>
 #include "SocketServer.h"
+#include "glo.h"
+
 namespace Ui {
 class MainWindowServer;
 }
@@ -20,14 +22,10 @@ public:
     ~MainWindowServer();
 
 private slots:
-
+    void    serverConnect();
 
 private:
     Ui::MainWindowServer *ui;
-    QLabel          *label;
-    QLineEdit       *caseCheckBox;
-    QCheckBox       *backwardCheckbox;
-    QPushButton     *closeButton;
 
     SocketServer * socketserver;
     int port;

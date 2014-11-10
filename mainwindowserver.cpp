@@ -1,43 +1,62 @@
 #include "mainwindowserver.h"
 #include "ui_mainwindowserver.h"
-
+#include "somFun.h"
 #include <QLabel>
 
 MainWindowServer::MainWindowServer(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindowServer)
 {
-/*
-    QHBoxLayout *topLeftLayout = new QHBoxLayout;
-    topLeftLayout->addWidget(label);
-    topLeftLayout->addWidget(caseCheckBox);
-
-    QVBoxLayout *leftLayout = new QVBoxLayout;
-    leftLayout->addLayout(topLeftLayout);
-    leftLayout->addWidget(closeButton);
-
-    */
-
-
-
-    socketserver = new SocketServer(this, 9877);
 
     ui->setupUi(this);
-    ui->IP_address->setText((getIPAddress()));
 
-    QString str;
-     str.append(ui->PortUsed->toPlainText());
-    qDebug() <<str;
+    connect(ui->serverWork, SIGNAL(clicked()), this, SLOT(serverConnect()));
 
-    ui->result123->setText("Start to run Run");
+}
 
-    //QTcpServer newserver;
-    //newserver.listen(QHostAddress::Any, 9867);
+void MainWindowServer::serverConnect()
+{
+    static bool flag = true;
+    if (flag)
+    {
+        flag = !flag;
+        ui->serverWork->setText("Disconnect");
+        // make the text ineditable
+        ui->PortUsed->setReadOnly(true);
+        // looks like be ineditable
+        GloPalette *pal = new GloPalette();
+        ui->PortUsed->setPalette(*(pal->palette_base));
 
-    ui->result1->setText("end of the run");
+        // set the local ip address
+        ui->IP_address->setText((getIPAddress()));
+        // read the port and connect
+        QString strPort;
+        strPort.append(ui->PortUsed->toPlainText());
+        bool flagTmp;
+        int port = strPort.toInt(&flagTmp, 10);
+        qDebug() << strPort;
+        qDebug() << port;
+        if (!flagTmp)
+        {
+            qDebug() << "Error for the wrong input of port!";
+            qDebug() << "Failed to init server for the wrong port";
+            return;
+        }
+        socketserver = new SocketServer(this, port);
+    } else {
+        flag = !flag;
+        ui->serverWork->setText("Connect");
+        // make the text editable
+        ui->PortUsed->setReadOnly(false);
 
-    //setWindowTitle(tr("Test-dwz-main"));
-    //setFixedHeight(sizeHint().height());
+        // looks like be editable
+        GloPalette *pal = new GloPalette();
+        ui->PortUsed->setPalette(*(pal->palette_norm));
+
+        delete socketserver;
+    }
+
+
 }
 
 MainWindowServer::~MainWindowServer()
